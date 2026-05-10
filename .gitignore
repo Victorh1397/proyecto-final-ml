@@ -1,0 +1,23 @@
+# --- Entorno Virtual ---
+env-proyecto-final-ml/
+.venv/
+venv/
+
+# --- Seguridad y Configuración ---
+.env
+.flaskenv
+
+# --- Archivos Temporales de Python y Notebooks ---
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.Python
+
+# --- Sistema y Editores ---
+.DS_Store
+.vscode/
+.idea/
+
+# --- Logs y Temporales ---
+*.log
