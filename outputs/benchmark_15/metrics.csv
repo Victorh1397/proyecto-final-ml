@@ -1,0 +1,16 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm,LightGBMClassifier,0.8505,0.7875647668393783,0.8183041722745625,0.8026402640264027,0.9220146453079444,models\benchmark_15\best_model.joblib
+random_forest,Random Forest con class_weight='balanced_subsample',0.844,0.796423658872077,0.7792732166890982,0.7877551020408163,0.9155726585227706,models\benchmark_15\random_forest.joblib
+catboost,CatBoostClassifier,0.8475,0.8258928571428571,0.746971736204576,0.784452296819788,0.9180192536867566,models\benchmark_15\catboost.joblib
+bagging,Bagging de arboles de decision,0.8395,0.7836021505376344,0.784656796769852,0.7841291190316073,0.911529619862284,models\benchmark_15\bagging.joblib
+gradient_boosting,XGBoostClassifier,0.847,0.8266068759342302,0.7442799461641992,0.78328611898017,0.9174287516154488,models\benchmark_15\gradient_boosting.joblib
+svm_rbf,Support Vector Machine con kernel RBF,0.8295,0.7557251908396947,0.7994616419919246,0.7769784172661871,0.900719630901407,models\benchmark_15\svm_rbf.joblib
+extra_trees,Extra Trees con class_weight='balanced',0.8305,0.7650918635170604,0.784656796769852,0.774750830564784,0.90981860932747,models\benchmark_15\extra_trees.joblib
+decision_tree,Arbol de decision balanceado,0.8035,0.7078384798099763,0.8021534320323015,0.7520504731861198,0.8894460201873546,models\benchmark_15\decision_tree.joblib
+logistic_regression,Regresion logistica con class_weight='balanced',0.7915,0.7002457002457002,0.7671601615074024,0.7321772639691715,0.8818139281396989,models\benchmark_15\logistic_regression.joblib
+ridge_classifier,RidgeClassifier con pesos balanceados,0.7915,0.7032418952618454,0.7590847913862718,0.7300970873786408,0.8773104798859898,models\benchmark_15\ridge_classifier.joblib
+linear_svm,Linear SVM con pesos balanceados,0.7845,0.6921182266009852,0.756393001345895,0.7228295819935692,0.8810408683110783,models\benchmark_15\linear_svm.joblib
+neural_network,TensorFlow/Keras MLP,0.808,0.7817896389324961,0.6702557200538358,0.7217391304347827,0.8796960440108742,models\benchmark_15\neural_network.joblib
+knn,K-Nearest Neighbors con pesos por distancia,0.81,0.7941653160453809,0.6594885598923284,0.7205882352941176,0.8792816753769738,models\benchmark_15\knn.joblib
+ada_boost,AdaBoost con arbol base poco profundo,0.802,0.8637316561844863,0.5545087483176312,0.6754098360655738,0.8897870445023348,models\benchmark_15\ada_boost.joblib
+gaussian_nb,Gaussian Naive Bayes,0.5455,0.4445927903871829,0.8963660834454913,0.5943775100401606,0.7884166299945072,models\benchmark_15\gaussian_nb.joblib

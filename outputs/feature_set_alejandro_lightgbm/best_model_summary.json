@@ -1,0 +1,13 @@
+{
+  "primary_metric": "f1",
+  "selected_model": "lightgbm",
+  "selected_score": 0.813251373551651,
+  "model_path": "models\\feature_set_alejandro_lightgbm\\best_model.joblib",
+  "metrics": {
+    "accuracy": 0.8556349873843566,
+    "precision": 0.7825586264656617,
+    "recall": 0.8464500056618729,
+    "f1": 0.813251373551651,
+    "roc_auc": 0.937558926712503
+  }
+}
