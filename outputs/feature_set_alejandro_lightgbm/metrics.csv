@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm,LightGBMClassifier,0.8556349873843566,0.7825586264656617,0.8464500056618729,0.813251373551651,0.937558926712503,models\feature_set_alejandro_lightgbm\best_model.joblib

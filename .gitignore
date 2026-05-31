@@ -21,3 +21,19 @@ __pycache__/
 
 # --- Logs y Temporales ---
 *.log
+*.tmp
+models/smoke*/
+outputs/smoke*/
+
+# --- Documentacion local no entregable ---
+docs/superpowers/
+docs/guion_defensa.md
+
+# --- Testing y cobertura ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Caches de herramientas ---
+.mypy_cache/
+.ruff_cache/

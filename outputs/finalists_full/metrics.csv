@@ -1,0 +1,6 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm,LightGBMClassifier,0.8547939444911691,0.7796381031613977,0.8489412297588043,0.8128150918848593,0.9394100550333747,models\finalists_full\best_model.joblib
+random_forest,Random Forest con class_weight='balanced_subsample',0.8575693860386879,0.8017738359201774,0.8189333031366776,0.8102627303792505,0.935799583680956,models\finalists_full\random_forest.joblib
+catboost,CatBoostClassifier,0.8560975609756097,0.8407458737558271,0.7556335635828332,0.7959208015267175,0.9317839223548416,models\finalists_full\catboost.joblib
+bagging,Bagging de arboles de decision,0.8460470984020185,0.7845662703654778,0.8070433699467784,0.7956461066145688,0.9300241816400651,models\finalists_full\bagging.joblib
+gradient_boosting,XGBoostClassifier,0.8521867115222876,0.8307615729218517,0.7559732759596874,0.7916049089938934,0.9298644872050117,models\finalists_full\gradient_boosting.joblib
