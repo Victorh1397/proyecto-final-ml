@@ -1,0 +1,13 @@
+{
+  "primary_metric": "f1",
+  "selected_model": "lightgbm_optuna",
+  "selected_score": 0.8513589083995079,
+  "model_path": "models/optuna_post_asignacion_lgbm_8h/best_model.joblib",
+  "metrics": {
+    "accuracy": 0.8882253994953743,
+    "precision": 0.8410120428681913,
+    "recall": 0.8619635375382176,
+    "f1": 0.8513589083995079,
+    "roc_auc": 0.9584247256737528
+  }
+}

@@ -12,7 +12,14 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from src.data import FEATURE_SET_ALEJANDRO, FEATURE_SET_VICTOR, TARGET_COLUMN, build_modeling_dataset
+from src.data import (
+    FEATURE_SET_ALEJANDRO,
+    FEATURE_SET_BINARY,
+    FEATURE_SET_POST_ASSIGNMENT,
+    FEATURE_SET_VICTOR,
+    TARGET_COLUMN,
+    build_modeling_dataset,
+)
 
 
 DEFAULT_MODELS_DIR = Path("models/finalists_full")
@@ -20,7 +27,12 @@ MODEL_NAME_PATTERN = re.compile(r"^[A-Za-z0-9_.-]+$")
 
 
 class PredictionRequest(BaseModel):
-    feature_set: Literal[FEATURE_SET_VICTOR, FEATURE_SET_ALEJANDRO] = FEATURE_SET_VICTOR
+    feature_set: Literal[
+        FEATURE_SET_VICTOR,
+        FEATURE_SET_ALEJANDRO,
+        FEATURE_SET_BINARY,
+        FEATURE_SET_POST_ASSIGNMENT,
+    ] = FEATURE_SET_VICTOR
     records: list[dict[str, Any]] = Field(min_length=1)
 
 

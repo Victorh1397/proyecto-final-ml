@@ -2,11 +2,15 @@ import pandas as pd
 
 from src.data import (
     FEATURE_SET_ALEJANDRO,
+    FEATURE_SET_BINARY,
+    FEATURE_SET_POST_ASSIGNMENT,
     FEATURE_SET_VICTOR,
     build_modeling_dataset,
     clean_raw_data,
     engineer_features,
     engineer_features_alejandro,
+    engineer_features_binary,
+    engineer_features_post_assignment,
     engineer_features_victor,
     get_feature_columns,
     split_features_target,
@@ -147,6 +151,7 @@ def test_alejandro_feature_set_keeps_granular_columns_and_adds_business_features
     assert expected_added_columns.issubset(modeled.columns)
     assert expected_granular_columns.issubset(modeled.columns)
     assert "assigned_room_type" not in modeled.columns
+    assert "total_price" not in modeled.columns
     assert modeled.loc[modeled["lead_time"] == 80, "total_nights"].item() == 5
     assert modeled.loc[modeled["lead_time"] == 80, "total_guests"].item() == 4
     assert modeled.loc[modeled["lead_time"] == 80, "has_special_requests"].item() == 1
@@ -169,3 +174,128 @@ def test_build_modeling_dataset_supports_alejandro_feature_set() -> None:
     assert "total_nights" in modeled.columns
     assert "assigned_room_type" not in modeled.columns
     assert "country" in modeled.columns
+
+
+def test_binary_feature_set_adds_selected_business_indicators_without_dropping_original_signals() -> None:
+    raw_rows = _raw_rows()
+    raw_rows.loc[0, "lead_time"] = 5
+    raw_rows.loc[1, "lead_time"] = 100
+    raw_rows.loc[0, "days_in_waiting_list"] = 3
+    raw_rows.loc[0, "market_segment"] = "Groups"
+    raw_rows.loc[0, "reserved_room_type"] = "L"
+    modeled = engineer_features_binary(clean_raw_data(raw_rows))
+
+    expected_binary_columns = {
+        "has_children",
+        "has_babies",
+        "has_previous_cancellations",
+        "has_previous_bookings",
+        "has_waiting_days",
+        "has_special_requests",
+        "has_parking_request",
+        "is_weekend_stay",
+        "is_long_stay",
+        "is_high_adr",
+        "is_early_booking",
+        "is_last_minute_booking",
+        "is_non_refundable",
+        "is_portugal",
+        "is_online_ta",
+        "is_group_segment",
+    }
+    original_signal_columns = {
+        "lead_time",
+        "stays_in_weekend_nights",
+        "stays_in_week_nights",
+        "children",
+        "babies",
+        "previous_cancellations",
+        "previous_bookings_not_canceled",
+        "days_in_waiting_list",
+        "adr",
+        "adr_per_guest",
+        "total_nights",
+        "total_guests",
+        "total_of_special_requests",
+        "required_car_parking_spaces",
+        "lead_time_bucket",
+    }
+
+    assert expected_binary_columns.issubset(modeled.columns)
+    assert original_signal_columns.issubset(modeled.columns)
+    assert "country" not in modeled.columns
+    assert "assigned_room_type" not in modeled.columns
+    assert modeled.loc[modeled["market_segment"] == "Groups", "reserved_room_type"].item() == "Other"
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "reserved_room_type"].item() == "D"
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "has_previous_cancellations"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Groups", "has_waiting_days"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "is_weekend_stay"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "is_long_stay"].item() == 0
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "is_high_adr"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "is_early_booking"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Groups", "is_last_minute_booking"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "is_non_refundable"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Groups", "is_portugal"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "is_online_ta"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Groups", "is_group_segment"].item() == 1
+
+
+def test_build_modeling_dataset_supports_binary_feature_set() -> None:
+    modeled = build_modeling_dataset(_raw_rows(), feature_set=FEATURE_SET_BINARY)
+
+    assert "is_high_adr" in modeled.columns
+    assert "adr" in modeled.columns
+    assert "country" not in modeled.columns
+    assert modeled["country_grouped"].nunique() <= 16
+
+
+def test_binary_feature_set_filters_only_its_business_outliers() -> None:
+    base_rows = _raw_rows()
+    outliers = pd.DataFrame([base_rows.iloc[0].to_dict() for _ in range(3)])
+    outliers["lead_time"] = [201, 202, 203]
+    outliers["reserved_room_type"] = ["H", "I", "K"]
+    outliers["adr"] = [1500.0, 90.0, 90.0]
+    outliers["adults"] = [2, 0, 11]
+    outliers["children"] = [0.0, 0.0, 0.0]
+    outliers["babies"] = [0, 0, 0]
+    raw_rows = pd.concat([base_rows, outliers], ignore_index=True)
+
+    victor = build_modeling_dataset(raw_rows, feature_set=FEATURE_SET_VICTOR)
+    alejandro = build_modeling_dataset(raw_rows, feature_set=FEATURE_SET_ALEJANDRO)
+    binary = build_modeling_dataset(raw_rows, feature_set=FEATURE_SET_BINARY)
+
+    assert len(victor) == 5
+    assert len(alejandro) == 5
+    assert len(binary) == 2
+    assert {"H", "I", "K"}.isdisjoint(set(binary["reserved_room_type"]))
+
+
+def test_post_assignment_feature_set_adds_requested_columns_and_drops_raw_admin_ids() -> None:
+    raw_rows = _raw_rows()
+    raw_rows.loc[1, "assigned_room_type"] = "A"
+    modeled = build_modeling_dataset(raw_rows, feature_set=FEATURE_SET_POST_ASSIGNMENT)
+
+    expected_columns = {
+        "total_guests",
+        "total_nights",
+        "adr_per_person",
+        "previous_cancel_ratio",
+        "room_changed",
+        "has_agent",
+        "has_company",
+        "arrival_season",
+    }
+
+    assert expected_columns.issubset(modeled.columns)
+    assert "reservation_status" not in modeled.columns
+    assert "reservation_status_date" not in modeled.columns
+    assert "agent" not in modeled.columns
+    assert "company" not in modeled.columns
+    assert "assigned_room_type" not in modeled.columns
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "total_guests"].item() == 4
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "total_nights"].item() == 5
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "previous_cancel_ratio"].item() == 1.0
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "room_changed"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "has_agent"].item() == 1
+    assert modeled.loc[modeled["market_segment"] == "Direct", "has_company"].item() == 0
+    assert modeled.loc[modeled["market_segment"] == "Online TA", "arrival_season"].item() == "winter"

@@ -1,0 +1,34 @@
+services:
+  optuna-lightgbm:
+    build:
+      context: .
+      dockerfile: Dockerfile.optuna
+    image: proyecto-final-ml-optuna:latest
+    container_name: hotel-optuna-lightgbm-24h
+    working_dir: /app
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command:
+      - python
+      - -m
+      - src.tune_optuna
+      - --feature-set
+      - victor
+      - --metric
+      - f1
+      - --timeout
+      - "86400"
+      - --cv-splits
+      - "3"
+      - --output-dir
+      - outputs/optuna_lightgbm
+      - --models-dir
+      - models/optuna_lightgbm
+      - --storage
+      - sqlite:///outputs/optuna_lightgbm/optuna_study.db
+      - --study-name
+      - hotel_lightgbm_f1_8h
+      - --model-jobs
+      - "-1"
+      - --study-jobs
+      - "1"

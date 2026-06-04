@@ -1,0 +1,34 @@
+services:
+  optuna-binary-native:
+    build:
+      context: .
+      dockerfile: Dockerfile.optuna
+    image: proyecto-final-ml-optuna-native:latest
+    container_name: hotel-optuna-binary-native-24h
+    working_dir: /app
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command:
+      - python
+      - -m
+      - src.tune_optuna_native
+      - --feature-set
+      - binary
+      - --metric
+      - f1
+      - --timeout
+      - "86400"
+      - --cv-splits
+      - "3"
+      - --output-dir
+      - outputs/optuna_binary_native_lgbm
+      - --models-dir
+      - models/optuna_binary_native_lgbm
+      - --storage
+      - sqlite:///outputs/optuna_binary_native_lgbm/optuna_study.db
+      - --study-name
+      - hotel_binary_native_lgbm_f1
+      - --model-jobs
+      - "-1"
+      - --study-jobs
+      - "1"

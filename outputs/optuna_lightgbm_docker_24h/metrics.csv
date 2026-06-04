@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_optuna,LightGBM optimizado con Optuna,0.8849032800672835,0.8352772887323944,0.8595855509002378,0.8472571014007478,0.9558832041169623,models/optuna_lightgbm/best_model.joblib

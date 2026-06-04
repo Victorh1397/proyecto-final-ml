@@ -9,7 +9,9 @@ import pandas as pd
 TARGET_COLUMN = "is_canceled"
 FEATURE_SET_VICTOR = "victor"
 FEATURE_SET_ALEJANDRO = "alejandro"
-FEATURE_SETS = (FEATURE_SET_VICTOR, FEATURE_SET_ALEJANDRO)
+FEATURE_SET_BINARY = "binary"
+FEATURE_SET_POST_ASSIGNMENT = "post_asignacion"
+FEATURE_SETS = (FEATURE_SET_VICTOR, FEATURE_SET_ALEJANDRO, FEATURE_SET_BINARY, FEATURE_SET_POST_ASSIGNMENT)
 
 LEAKAGE_AND_ADMIN_COLUMNS = [
     "agent",
@@ -30,6 +32,22 @@ SOURCE_FEATURE_COLUMNS = [
 ]
 
 ASSIGNED_ROOM_COLUMN = "assigned_room_type"
+BINARY_TOP_COUNTRY_COUNT = 15
+COMMON_RESERVED_ROOM_TYPES = {"A", "D", "E", "F", "G"}
+MONTH_TO_SEASON = {
+    "December": "winter",
+    "January": "winter",
+    "February": "winter",
+    "March": "spring",
+    "April": "spring",
+    "May": "spring",
+    "June": "summer",
+    "July": "summer",
+    "August": "summer",
+    "September": "autumn",
+    "October": "autumn",
+    "November": "autumn",
+}
 
 
 def load_dataset(path: str | Path) -> pd.DataFrame:
@@ -41,6 +59,26 @@ def clean_raw_data(raw_data: pd.DataFrame) -> pd.DataFrame:
     """Limpia el dataset bruto evitando columnas administrativas o con fuga."""
     data = raw_data.copy()
     columns_to_drop = [column for column in LEAKAGE_AND_ADMIN_COLUMNS if column in data.columns]
+    data = data.drop(columns=columns_to_drop)
+
+    if "adr" in data.columns:
+        data = data[data["adr"] >= 0]
+
+    nullable_columns = [column for column in ["children", "country"] if column in data.columns]
+    if nullable_columns:
+        data = data.dropna(subset=nullable_columns)
+
+    if "children" in data.columns:
+        data["children"] = data["children"].astype("int64")
+
+    return data.reset_index(drop=True)
+
+
+def clean_raw_data_for_post_assignment_features(raw_data: pd.DataFrame) -> pd.DataFrame:
+    """Limpia para el modelo post-asignacion sin eliminar agent/company."""
+    data = raw_data.copy()
+    leakage_columns = ["reservation_status", "reservation_status_date", "arrival_date_year"]
+    columns_to_drop = [column for column in leakage_columns if column in data.columns]
     data = data.drop(columns=columns_to_drop)
 
     if "adr" in data.columns:
@@ -162,6 +200,99 @@ def engineer_features_alejandro(data: pd.DataFrame, top_country_count: int = 50)
     return modeled.reset_index(drop=True)
 
 
+def engineer_features_binary(data: pd.DataFrame, top_country_count: int = BINARY_TOP_COUNTRY_COUNT) -> pd.DataFrame:
+    """Crea una variante experimental que conserva granularidad y agrega indicadores."""
+    modeled = engineer_features_alejandro(data, top_country_count)
+
+    if {"adr", "total_guests"}.issubset(modeled.columns):
+        modeled = modeled[
+            (modeled["adr"] <= 1000)
+            & (modeled["total_guests"] > 0)
+            & (modeled["total_guests"] <= 10)
+        ].copy()
+
+    if "previous_cancellations" in modeled.columns:
+        modeled["has_previous_cancellations"] = (modeled["previous_cancellations"] > 0).astype("int64")
+
+    if "previous_bookings_not_canceled" in modeled.columns:
+        modeled["has_previous_bookings"] = (modeled["previous_bookings_not_canceled"] > 0).astype("int64")
+
+    if "days_in_waiting_list" in modeled.columns:
+        modeled["has_waiting_days"] = (modeled["days_in_waiting_list"] > 0).astype("int64")
+
+    if "stays_in_weekend_nights" in modeled.columns:
+        modeled["is_weekend_stay"] = (modeled["stays_in_weekend_nights"] > 0).astype("int64")
+
+    if "total_nights" in modeled.columns:
+        modeled["is_long_stay"] = (modeled["total_nights"] >= 7).astype("int64")
+
+    if "adr" in modeled.columns:
+        high_adr_threshold = modeled["adr"].quantile(0.75)
+        modeled["is_high_adr"] = (modeled["adr"] >= high_adr_threshold).astype("int64")
+
+    if "lead_time" in modeled.columns:
+        modeled["is_last_minute_booking"] = (modeled["lead_time"] <= 7).astype("int64")
+        modeled["is_early_booking"] = (modeled["lead_time"] >= 90).astype("int64")
+
+    if "deposit_type" in modeled.columns:
+        modeled["is_non_refundable"] = (modeled["deposit_type"] == "Non Refund").astype("int64")
+
+    if "country" in modeled.columns:
+        modeled["is_portugal"] = (modeled["country"] == "PRT").astype("int64")
+        modeled = modeled.drop(columns=["country"])
+
+    if "market_segment" in modeled.columns:
+        modeled["is_online_ta"] = (modeled["market_segment"] == "Online TA").astype("int64")
+        modeled["is_group_segment"] = (modeled["market_segment"] == "Groups").astype("int64")
+
+    if "reserved_room_type" in modeled.columns:
+        modeled["reserved_room_type"] = modeled["reserved_room_type"].where(
+            modeled["reserved_room_type"].isin(COMMON_RESERVED_ROOM_TYPES),
+            "Other",
+        )
+
+    return modeled.reset_index(drop=True)
+
+
+def engineer_features_post_assignment(data: pd.DataFrame) -> pd.DataFrame:
+    """Crea variables disponibles despues de asignar habitacion."""
+    modeled = data.copy()
+
+    if {"adults", "children", "babies"}.issubset(modeled.columns):
+        modeled["total_guests"] = modeled["adults"] + modeled["children"] + modeled["babies"]
+        denominator = modeled["total_guests"].replace(0, np.nan)
+        modeled["adr_per_person"] = (modeled["adr"] / denominator).replace([np.inf, -np.inf], np.nan)
+        modeled["adr_per_person"] = modeled["adr_per_person"].fillna(modeled["adr"])
+
+    if {"stays_in_weekend_nights", "stays_in_week_nights"}.issubset(modeled.columns):
+        modeled["total_nights"] = modeled["stays_in_weekend_nights"] + modeled["stays_in_week_nights"]
+
+    if {"previous_cancellations", "previous_bookings_not_canceled"}.issubset(modeled.columns):
+        previous_total = modeled["previous_cancellations"] + modeled["previous_bookings_not_canceled"]
+        denominator = previous_total.replace(0, np.nan)
+        modeled["previous_cancel_ratio"] = (
+            modeled["previous_cancellations"] / denominator
+        ).replace([np.inf, -np.inf], np.nan)
+        modeled["previous_cancel_ratio"] = modeled["previous_cancel_ratio"].fillna(0.0)
+
+    if {"assigned_room_type", "reserved_room_type"}.issubset(modeled.columns):
+        modeled["room_changed"] = (modeled["assigned_room_type"] != modeled["reserved_room_type"]).astype("int64")
+        modeled = modeled.drop(columns=["assigned_room_type"])
+
+    if "agent" in modeled.columns:
+        modeled["has_agent"] = modeled["agent"].notna().astype("int64")
+        modeled = modeled.drop(columns=["agent"])
+
+    if "company" in modeled.columns:
+        modeled["has_company"] = modeled["company"].notna().astype("int64")
+        modeled = modeled.drop(columns=["company"])
+
+    if "arrival_date_month" in modeled.columns:
+        modeled["arrival_season"] = modeled["arrival_date_month"].map(MONTH_TO_SEASON).fillna("unknown")
+
+    return modeled.reset_index(drop=True)
+
+
 def engineer_features(data: pd.DataFrame, top_country_count: int = 15) -> pd.DataFrame:
     """Compatibilidad hacia atras: usa el feature set de Victor."""
     return engineer_features_victor(data, top_country_count)
@@ -169,11 +300,16 @@ def engineer_features(data: pd.DataFrame, top_country_count: int = 15) -> pd.Dat
 
 def build_modeling_dataset(raw_data: pd.DataFrame, feature_set: str = FEATURE_SET_VICTOR) -> pd.DataFrame:
     """Ejecuta limpieza e ingenieria de variables desde el dataset bruto."""
+    if feature_set == FEATURE_SET_POST_ASSIGNMENT:
+        return engineer_features_post_assignment(clean_raw_data_for_post_assignment_features(raw_data))
+
     cleaned = clean_raw_data(raw_data)
     if feature_set == FEATURE_SET_VICTOR:
         return engineer_features_victor(cleaned)
     if feature_set == FEATURE_SET_ALEJANDRO:
         return engineer_features_alejandro(cleaned)
+    if feature_set == FEATURE_SET_BINARY:
+        return engineer_features_binary(cleaned)
     raise ValueError(f"feature_set debe ser uno de: {', '.join(FEATURE_SETS)}.")
 
 
