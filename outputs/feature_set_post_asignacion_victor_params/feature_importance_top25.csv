@@ -1,0 +1,26 @@
+feature,importance
+num__lead_time,51989
+num__adr,45895
+num__adr_per_person,44884
+num__arrival_date_day_of_month,37777
+num__arrival_date_week_number,34492
+num__total_nights,17083
+num__stays_in_week_nights,16544
+num__stays_in_weekend_nights,10567
+num__total_of_special_requests,10026
+num__booking_changes,6049
+cat__hotel_Resort Hotel,4352
+num__total_guests,4001
+cat__reserved_room_type_D,3698
+num__adults,3506
+cat__country_PRT,3354
+cat__meal_SC,3080
+cat__country_GBR,2851
+cat__meal_HB,2656
+cat__arrival_season_summer,2609
+cat__market_segment_Online TA,2534
+num__children,2524
+cat__arrival_date_month_July,2417
+cat__country_FRA,2386
+cat__customer_type_Transient-Party,2300
+cat__arrival_date_month_August,2248

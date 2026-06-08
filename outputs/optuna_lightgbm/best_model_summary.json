@@ -1,0 +1,13 @@
+{
+  "primary_metric": "f1",
+  "selected_model": "lightgbm_optuna",
+  "selected_score": 0.8439787092481703,
+  "model_path": "models\\optuna_lightgbm\\best_model.joblib",
+  "metrics": {
+    "accuracy": 0.8816652649285114,
+    "precision": 0.8268332428028246,
+    "recall": 0.8618503000792662,
+    "f1": 0.8439787092481703,
+    "roc_auc": 0.9550257081755469
+  }
+}

@@ -1,0 +1,35 @@
+services:
+  optuna-post-asignacion:
+    build:
+      context: .
+      dockerfile: Dockerfile.optuna
+    image: proyecto-final-ml-post-asignacion:latest
+    container_name: hotel-optuna-post-asignacion-8h
+    working_dir: /app
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command:
+      - python
+      - -m
+      - src.tune_optuna
+      - --feature-set
+      - post_asignacion
+      - --metric
+      - f1
+      - --timeout
+      - "28800"
+      - --cv-splits
+      - "3"
+      - --output-dir
+      - outputs/optuna_post_asignacion_lgbm_8h
+      - --models-dir
+      - models/optuna_post_asignacion_lgbm_8h
+      - --storage
+      - sqlite:///outputs/optuna_post_asignacion_lgbm_8h/optuna_study.db
+      - --study-name
+      - hotel_post_asignacion_lgbm_f1_8h
+      - --model-jobs
+      - "-1"
+      - --study-jobs
+      - "1"
+      - --no-plots

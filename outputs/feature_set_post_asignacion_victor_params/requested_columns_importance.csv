@@ -1,0 +1,9 @@
+requested_column,total_importance,matching_features
+total_guests,4002,num__total_guests
+total_nights,17084,num__total_nights
+adr_per_person,44884,num__adr_per_person
+previous_cancel_ratio,1250,num__previous_cancel_ratio
+room_changed,1791,num__room_changed
+has_agent,2047,num__has_agent
+has_company,1058,num__has_company
+arrival_season,6091,cat__arrival_season_summer;cat__arrival_season_spring;cat__arrival_season_winter

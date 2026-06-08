@@ -1,0 +1,20 @@
+{
+  "study_name": "hotel_lightgbm_f1_8h",
+  "feature_set": "victor",
+  "primary_metric": "f1",
+  "best_value": 0.8411901486686686,
+  "best_trial": 1882,
+  "best_params": {
+    "n_estimators": 1700,
+    "learning_rate": 0.02065921142136346,
+    "num_leaves": 232,
+    "max_depth": 16,
+    "min_child_samples": 10,
+    "subsample": 0.8668272157418362,
+    "colsample_bytree": 0.661981314679127,
+    "reg_alpha": 7.105608980663393e-06,
+    "reg_lambda": 7.547059786652723e-07,
+    "min_split_gain": 7.55284857198732e-05,
+    "class_weight": "balanced"
+  }
+}

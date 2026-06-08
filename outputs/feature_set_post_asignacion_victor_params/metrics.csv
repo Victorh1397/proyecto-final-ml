@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_post_asignacion_victor_params,LightGBM post-asignacion with Victor Optuna params,0.8887720773759462,0.84184350132626,0.8625297248329747,0.8520610772414564,0.9585969868988524,models/feature_set_post_asignacion_victor_params/best_model.joblib
