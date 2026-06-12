@@ -1,0 +1,5 @@
+model,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_native_categorical,0.8519142484100577,0.7818239728208939,0.8344475920679887,0.8072791054593291,0.934475647230355,models\encoding_experiment_binary_full\lightgbm_native_categorical.joblib
+lightgbm_one_hot_current,0.8512403655814346,0.7809149771786434,0.8336543909348442,0.8064233256604187,0.9334412636102858,models\encoding_experiment_binary_full\lightgbm_one_hot_current.joblib
+lightgbm_ordinal,0.8514088362885903,0.7825669476154913,0.8311614730878187,0.8061325420375866,0.9336485535469253,models\encoding_experiment_binary_full\lightgbm_ordinal.joblib
+lightgbm_target_mean,0.8497662468938213,0.7800980183251651,0.8296883852691218,0.8041293723573665,0.9338121865062532,models\encoding_experiment_binary_full\lightgbm_target_mean.joblib

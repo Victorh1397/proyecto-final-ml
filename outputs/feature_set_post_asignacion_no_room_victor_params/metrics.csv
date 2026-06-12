@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_post_asignacion_no_room_victor_params,LightGBM post-asignacion without room_changed,0.8830950378469302,0.8344941956882256,0.8547163401653267,0.8444842246587604,0.9548210831105001,models/feature_set_post_asignacion_no_room_victor_params/best_model.joblib

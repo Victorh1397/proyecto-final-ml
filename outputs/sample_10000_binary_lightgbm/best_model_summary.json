@@ -1,0 +1,13 @@
+{
+  "primary_metric": "f1",
+  "selected_model": "lightgbm",
+  "selected_score": 0.776673293571902,
+  "model_path": "models\\sample_10000_binary_lightgbm\\best_model.joblib",
+  "metrics": {
+    "accuracy": 0.8315,
+    "precision": 0.7650130548302873,
+    "recall": 0.7886944818304172,
+    "f1": 0.776673293571902,
+    "roc_auc": 0.9165844889078764
+  }
+}

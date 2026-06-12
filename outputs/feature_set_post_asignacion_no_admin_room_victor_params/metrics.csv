@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_post_asignacion_no_admin_room_victor_params,LightGBM post-asignacion without room/admin flags,0.8823801513877207,0.8347015753272687,0.8519986411504926,0.8432614177640796,0.9543659744228782,models/feature_set_post_asignacion_no_admin_room_victor_params/best_model.joblib

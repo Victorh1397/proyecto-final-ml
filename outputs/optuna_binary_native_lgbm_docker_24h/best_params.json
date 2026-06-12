@@ -1,0 +1,24 @@
+{
+  "study_name": "hotel_binary_native_lgbm_f1",
+  "feature_set": "binary",
+  "primary_metric": "f1",
+  "best_value": 0.8387673041851492,
+  "best_trial": 1244,
+  "best_params": {
+    "n_estimators": 1380,
+    "learning_rate": 0.018175623921856548,
+    "num_leaves": 239,
+    "max_depth": 16,
+    "min_child_samples": 10,
+    "feature_fraction": 0.6823977256468788,
+    "bagging_fraction": 0.9372646219490907,
+    "reg_alpha": 3.886067681364885e-05,
+    "reg_lambda": 0.1029594940881825,
+    "min_split_gain": 0.002645798065754077
+  },
+  "fixed_params": {
+    "objective": "binary",
+    "class_weight": "balanced",
+    "native_categorical": true
+  }
+}
