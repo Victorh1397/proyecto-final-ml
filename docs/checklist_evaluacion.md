@@ -18,7 +18,7 @@ Estado revisado en local antes de subir cambios al repositorio remoto.
 | Metrica principal | Cubierto | F1-score justificado en README e informe. |
 | Matriz de confusion | Cubierto | `outputs/benchmark_15/confusion_matrix_<modelo>.png`. |
 | Curva ROC | Cubierto | `outputs/benchmark_15/roc_curve_<modelo>.png` y `roc_curves_comparison.png`. |
-| Pipeline estructurado | Cubierto | `src/data.py`, `src/models.py`, `src/evaluate.py`, `src/train.py`. |
+| Pipeline estructurado | Cubierto | `src/data.py`, `src/models.py`, `src/evaluate.py`, `src/train.py`, `src/tune_optuna.py`. |
 | Carga, preprocesamiento, entrenamiento, evaluacion y seleccion | Cubierto | `python -m src.train ...` ejecuta el flujo completo. |
 
 ## Entregables obligatorios
@@ -26,13 +26,13 @@ Estado revisado en local antes de subir cambios al repositorio remoto.
 | Entregable | Estado | Evidencia |
 | --- | --- | --- |
 | Repositorio GitHub | Pendiente de push | Los cambios estan en local. Hay que hacer commit y push al remoto antes de entregar. |
-| Codigo bien estructurado | Cubierto | Carpetas `src/`, `tests/`, `notebooks/`, `data/`, `outputs/`, `models/` y API en `src/api.py`. |
+| Codigo bien estructurado | Cubierto | Carpetas `src/`, `tests/`, `notebooks/`, `data/`, `outputs/`, `models/`, API en `src/api.py` y tuning en `src/tune_optuna.py`. |
 | README con autores | Cubierto | Victor y Alejandro figuran en `README.md`. |
 | README con descripcion del problema y datos | Cubierto | Secciones "Datos" y objetivo del proyecto. |
 | README con instrucciones de ejecucion | Cubierto | Seccion "Ejecucion". |
 | README con resultados y conclusiones | Cubierto | Secciones "Resultados verificados" y "Conclusiones". |
 | `.gitignore` adecuado | Cubierto | Ignora entornos, caches, logs y temporales. |
-| `requirements.txt` | Cubierto | Incluye scikit-learn, TensorFlow, XGBoost, LightGBM, CatBoost, FastAPI, Uvicorn y pytest. |
+| `requirements.txt` | Cubierto | Incluye scikit-learn, TensorFlow, XGBoost, LightGBM, CatBoost, FastAPI, Uvicorn, Optuna y pytest. |
 | Informe final PDF o Markdown | Cubierto | `docs/informe_final.md`. |
 | Roles de la pareja | Cubierto en documentacion | Victor y Alejandro figuran en README e informe. |
 | Analisis exploratorio de datos | Cubierto | `notebooks/exploracion/eda_inicial.ipynb` y resumen en informe. |
@@ -48,13 +48,13 @@ Estado revisado en local antes de subir cambios al repositorio remoto.
 | `reservation_status_date` casi 99.95% | Cubierto | Documentado en README e informe como rendimiento invalido por fuga. |
 | Versiones de dataset comparables | Cubierto | `dataset_practica_final_modelado_victor.csv` y `dataset_practica_final_modelado_alejandro.csv`. |
 | Guion para defensa | Local no versionado | `docs/guion_defensa.md` existe en local y esta excluido de Git por decision del equipo. |
-| Pruebas automatizadas | Cubierto | `tests/`, verificado con `13 passed`. |
+| Pruebas automatizadas | Cubierto | `tests/`, verificado con `14 passed`. |
 
 ## Bonus tecnicos presentes
 
 | Bonus | Estado | Evidencia |
 | --- | --- | --- |
-| Optimizacion de hiperparametros | Parcial | Existe bandera `--tune` con `GridSearchCV` para modelos con `param_grid`; no se ha usado como resultado principal. |
+| Optimizacion de hiperparametros | Cubierto | `src/tune_optuna.py` optimiza LightGBM con Optuna y `docker-compose.optuna.yml` permite dejarlo 8 horas en Docker. |
 | Balanceo de clases | Cubierto | `class_weight` en modelos compatibles. |
 | Interpretabilidad | Cubierto | Graficos `feature_importance_<modelo>.png`. |
 | Red neuronal Keras | Cubierto | TensorFlow/Keras instalado y probado. |

@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_native_optuna,LightGBM con categoricas nativas optimizado con Optuna,0.8797961504443415,0.8328687702084959,0.8464589235127479,0.8396088569180623,0.951242968644074,models/optuna_binary_native_lgbm/best_model.joblib

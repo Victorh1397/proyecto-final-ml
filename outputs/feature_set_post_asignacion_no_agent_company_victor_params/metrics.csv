@@ -1,0 +1,2 @@
+model,estimator_description,accuracy,precision,recall,f1,roc_auc,model_path
+lightgbm_post_asignacion_no_agent_company_victor_params,LightGBM post-asignacion without agent/company flags,0.8882253994953743,0.8411628164032275,0.8617370626203148,0.8513256516388857,0.9584469277603263,models/feature_set_post_asignacion_no_agent_company_victor_params/best_model.joblib
